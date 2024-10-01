@@ -2,169 +2,76 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
 void main() {
-  debugPaintSizeEnabled = false; // Set to true for visual layout.
+  debugPaintSizeEnabled = false; // Set to true for visual layout
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const showGrid = true; // Set to false to show ListView
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AzkaOne belajar flutter',
-      home: buildHomePage('Strawberry Pavlova Recipe'),
+      title: 'Flutter layout demo',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter layout demo'),
+        ),
+        body: Center(child: showGrid ? _buildGrid() : _buildList()),
+      ),
     );
   }
 
-  Widget buildHomePage(String title) {
-    const titleText = Padding(
-      padding: EdgeInsets.all(20),
-      child: Text(
-        'Strawberry Pavlova',
-        style: TextStyle(
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.5,
-          fontSize: 30,
-        ),
-      ),
-    );
+  // #docregion grid
+  Widget _buildGrid() => GridView.extent(
+      maxCrossAxisExtent: 150,
+      padding: const EdgeInsets.all(4),
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
+      children: _buildGridTileList(30));
 
-    const subTitle = Text(
-      'Pavlova is a meringue-based dessert named after the Russian ballerina '
-      'Anna Pavlova. Pavlova features a crisp crust and soft, light inside, '
-      'topped with fruit and whipped cream.',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontFamily: 'Georgia',
-        fontSize: 25,
-      ),
-    );
+  // The images are saved with names pic0.jpg, pic1.jpg...pic29.jpg.
+  // The List.generate() constructor allows an easy way to create
+  // a list when objects have a predictable naming pattern.
+  List<Container> _buildGridTileList(int count) => List.generate(
+      count, (i) => Container(child: Image.asset('assets/image/logo.jpg')));
+  // #enddocregion grid
 
-    // #docregion ratings, stars
-    final stars = Row(
-      mainAxisSize: MainAxisSize.min,
+  // #docregion list
+  Widget _buildList() {
+    return ListView(
       children: [
-        Icon(Icons.star, color: Colors.green[500]),
-        Icon(Icons.star, color: Colors.green[500]),
-        Icon(Icons.star, color: Colors.green[500]),
-        const Icon(Icons.star, color: Colors.black),
-        const Icon(Icons.star, color: Colors.black),
+        _tile('CineArts at the Empire', '85 W Portal Ave', Icons.theaters),
+        _tile('The Castro Theater', '429 Castro St', Icons.theaters),
+        _tile('Alamo Drafthouse Cinema', '2550 Mission St', Icons.theaters),
+        _tile('Roxie Theater', '3117 16th St', Icons.theaters),
+        _tile('United Artists Stonestown Twin', '501 Buckingham Way',
+            Icons.theaters),
+        _tile('AMC Metreon 16', '135 4th St #3000', Icons.theaters),
+        const Divider(),
+        _tile('K\'s Kitchen', '757 Monterey Blvd', Icons.restaurant),
+        _tile('Emmy\'s Restaurant', '1923 Ocean Ave', Icons.restaurant),
+        _tile('Chaiya Thai Restaurant', '272 Claremont Blvd', Icons.restaurant),
+        _tile('La Ciccia', '291 30th St', Icons.restaurant),
       ],
     );
-    // #enddocregion stars
+  }
 
-    final ratings = Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          stars,
-          const Text(
-            '170 Reviews',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'Roboto',
-              letterSpacing: 0.5,
-              fontSize: 20,
-            ),
-          ),
-        ],
+  ListTile _tile(String title, String subtitle, IconData icon) {
+    return ListTile(
+      title: Text(title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+          )),
+      subtitle: Text(subtitle),
+      leading: Icon(
+        icon,
+        color: Colors.blue[500],
       ),
-    );
-    // #enddocregion ratings
-
-    // #docregion icon-list
-    const descTextStyle = TextStyle(
-      color: Colors.black,
-      fontWeight: FontWeight.w800,
-      fontFamily: 'Roboto',
-      letterSpacing: 0.5,
-      fontSize: 18,
-      height: 2,
-    );
-
-    // DefaultTextStyle.merge() allows you to create a default text
-    // style that is inherited by its child and all subsequent children.
-    final iconList = DefaultTextStyle.merge(
-      style: descTextStyle,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              children: [
-                Icon(Icons.kitchen, color: Colors.green[500]),
-                const Text('PREP:'),
-                const Text('25 min'),
-              ],
-            ),
-            Column(
-              children: [
-                Icon(Icons.timer, color: Colors.green[500]),
-                const Text('COOK:'),
-                const Text('1 hr'),
-              ],
-            ),
-            Column(
-              children: [
-                Icon(Icons.restaurant, color: Colors.green[500]),
-                const Text('FEEDS:'),
-                const Text('4-6'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-    // #enddocregion icon-list
-
-    // #docregion left-column
-    final leftColumn = Container(
-      padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-      child: Column(
-        children: [
-          titleText,
-          subTitle,
-          ratings,
-          iconList,
-        ],
-      ),
-    );
-    // #enddocregion left-column
-
-    final mainImage = Image.asset(
-      'assets/image/logo.jpg',
-      width: 400,
-      fit: BoxFit.cover,
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      // #docregion body
-      body: Center(
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 40, 0, 30),
-          height: 600,
-          child: Card(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 440,
-                  child: leftColumn,
-                ),
-                mainImage,
-              ],
-            ),
-          ),
-        ),
-      ),
-      // #enddocregion body
     );
   }
+  // #enddocregion list
 }

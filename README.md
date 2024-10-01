@@ -8,3 +8,4 @@
 8.![REVIEW BINTANG](<8 reiew1.png>)
 9.![FULL RIVIEW BINTANG](<Screenshot 2024-10-01 105141.png>)
 10.![layouts](image.png)
+![grid image](image-1.png)
